@@ -38,3 +38,11 @@ console.log("\nWelcome to Bamazon!\n")
           }
       });
 }
+function productListSearch() {
+
+}
+
+function exit() {
+    console.log("\nThank you for visiting Bamazon!  Good Bye!\n")
+    connection.end();
+}
