@@ -39,7 +39,54 @@ console.log("\nWelcome to Bamazon!\n")
       });
 }
 function productListSearch() {
-
+    connection.query("SELECT * FROM products", function(err, results) {
+        if (err) throw err;
+    inquirer
+        .prompt([
+            {
+            name: "choice",
+            type: "rawlist",
+            choices: function() {
+                var choiceArray = [];
+                for (var i = 0; i < results.length; i++) {
+                    choiceArray.push(results[i].product_name);
+                  }
+                return choiceArray;
+            },
+            message: "What is the ID of the product you would like to puchase?"
+            },
+            {
+            name: "purchase",
+            type: "input",
+            message: "How many would you like to purchase?"
+            }
+        ])
+        .then(function(answer) {
+            var chosenItem
+            for (var i = 0 ; i < results.length; i++) {
+                if (results[i].product_name === answer.choice) {
+                    chosenItem = results[i];
+                }
+            }
+            if (chosenItem.stock_quantity < parseInt(answer.purchase)) {
+                connection.query(
+                    "UPDATE products SET ? WHERE ?",
+                    [
+                        {
+                            stock_quantity: (stock_quantity - answer.purchase)
+                        },
+                        {
+                            id: chosenItem.id
+                        }
+                    ],
+                    function(error) {
+                        if (error) throw err;
+                        console.log("Congratulations! Purchase successful!");
+                        runSearch();
+                    }
+                )
+            }
+        })
 }
 
 function exit() {
