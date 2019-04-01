@@ -8,12 +8,14 @@ var connection = mysql.createConnection({
     password: "root",
     database: "bamazonDB"
   });
-
-connection.connect(function(err) {
+start()
+  function start() {
+connection.connect(function(err, results) {
     if (err) throw err;
     runSearch();
 });
-  
+  }  
+
 console.log("\nWelcome to Bamazon!\n")
 
   function runSearch() {
@@ -39,8 +41,7 @@ console.log("\nWelcome to Bamazon!\n")
       });
 }
 function productListSearch() {
-    connection.query("SELECT * FROM products", function(err, results) {
-        if (err) throw err;
+    start();
     inquirer
         .prompt([
             {
@@ -76,7 +77,7 @@ function productListSearch() {
                             stock_quantity: (stock_quantity - answer.purchase)
                         },
                         {
-                            id: chosenItem.id
+                            item_id: chosenItem.item_id
                         }
                     ],
                     function(error) {
@@ -91,7 +92,9 @@ function productListSearch() {
                 runSearch();
             }
         })
-    })}
+    }
+
+
 
 function exit() {
     console.log("\nThank you for visiting Bamazon!  Good Bye!\n")
