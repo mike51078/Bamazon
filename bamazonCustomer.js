@@ -68,7 +68,7 @@ function productListSearch() {
                     chosenItem = results[i];
                 }
             }
-            if (chosenItem.stock_quantity < parseInt(answer.purchase)) {
+            if (chosenItem.stock_quantity > parseInt(answer.purchase)) {
                 connection.query(
                     "UPDATE products SET ? WHERE ?",
                     [
@@ -86,8 +86,12 @@ function productListSearch() {
                     }
                 )
             }
+            else if (chosenItem.stock_quantity < parseInt(answer.purchase)) {
+                console.log("Insufficient quantity in stock.  Please update amount, or choose a different item.  Thank you!");
+                runSearch();
+            }
         })
-}
+    })}
 
 function exit() {
     console.log("\nThank you for visiting Bamazon!  Good Bye!\n")
