@@ -8,13 +8,14 @@ var connection = mysql.createConnection({
     password: "root",
     database: "bamazonDB"
   });
-start()
-  function start() {
+
+start();
+function start() {
 connection.connect(function(err, results) {
     if (err) throw err;
     runSearch();
-});
-  }  
+    });
+  }; 
 
 console.log("\nWelcome to Bamazon!\n")
 
@@ -34,6 +35,7 @@ console.log("\nWelcome to Bamazon!\n")
               case "See list of products for sale.":
               productListSearch();
               break;
+
               case "Exit":
               exit();
               break;
@@ -41,20 +43,21 @@ console.log("\nWelcome to Bamazon!\n")
       });
 }
 function productListSearch() {
-    start();
+    connection.query("SELECT * FROM products", function(err, results) {
+        if (err) throw err;
     inquirer
         .prompt([
             {
             name: "choice",
             type: "rawlist",
+            message: "What is the ID of the product you would like to puchase?",
             choices: function() {
                 var choiceArray = [];
                 for (var i = 0; i < results.length; i++) {
                     choiceArray.push(results[i].product_name);
-                  }
+                }
                 return choiceArray;
             },
-            message: "What is the ID of the product you would like to puchase?"
             },
             {
             name: "purchase",
@@ -92,7 +95,8 @@ function productListSearch() {
                 runSearch();
             }
         })
-    }
+    })
+}
 
 
 
