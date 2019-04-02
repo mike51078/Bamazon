@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
 
 start();
 function start() {
-    connection.connect(function (err, results) {
+    connection.connect(function (err) {
         if (err) throw err;
         runSearch();
     });
@@ -52,11 +52,11 @@ function productListSearch() {
                     type: "rawlist",
                     message: "What is the ID of the product you would like to puchase?",
                     choices: function () {
-                        var choiceArray = [];
-                        for (var i = 0; i < res.length; i++) {
-                            choiceArray.push(res[i].product_name);
-                        }
-                        return choiceArray;
+                                var choiceArray = [];
+                                for (var i = 0; i < res.length; i++) {
+                                    choiceArray.push(res[i].product_name);
+                                }
+                                return choiceArray;
                     },
                 },
                 {
@@ -71,7 +71,7 @@ function productListSearch() {
                         var chosenItem = res[i];
                     }
                 }
-                connection.query("SELECT * FROM products WHERE item_id = chosenItem", function (err, results) {
+                connection.query("SELECT * FROM products WHERE item_id = chosenItem.item_id", function (err, res) {
                     if (err) throw err;
                     else if (chosenItem.stock_quantity > parseInt(quantity)) {
                     connection.query(
@@ -98,7 +98,6 @@ function productListSearch() {
     })
 }
     )}
-
 
 function exit() {
     console.log("\nThank you for visiting Bamazon!  Good Bye!\n")
