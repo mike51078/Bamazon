@@ -17,7 +17,7 @@ function start() {
     });
 };
 
-console.log("\nWelcome to Bamazon!\n")
+console.log("\nWelcome to Bamazon!\n");
 
 function runSearch() {
     inquirer
@@ -93,7 +93,7 @@ function productListSearch() {
                         }
                 );
                 }
-                else if (chosenItem.stock_quantity < parseInt(quantity)) {
+                else if (chosenItem.stock_quantity < parseInt(answer.quantity)) {
                     console.log("Insufficient quantity in stock.  Please update amount, or choose a different item.  Thank you!");
                     runSearch();
                 }
