@@ -7,97 +7,97 @@ var connection = mysql.createConnection({
     user: "root",
     password: "root",
     database: "bamazonDB"
-  });
+});
 
 start();
 function start() {
-connection.connect(function(err, results) {
-    if (err) throw err;
-    runSearch();
+    connection.connect(function (err, results) {
+        if (err) throw err;
+        runSearch();
     });
-  }; 
+};
 
 console.log("\nWelcome to Bamazon!\n")
 
-  function runSearch() {
+function runSearch() {
     inquirer
-      .prompt({
-        name: "action",
-        type: "rawlist",
-        message: "What would you like to do?",
-        choices: [
-          "See list of products for sale.",
-          "Exit"
-        ]
-      })
-      .then(function(answer){
-          switch(answer.action) {
-              case "See list of products for sale.":
-              productListSearch();
-              break;
+        .prompt({
+            name: "action",
+            type: "rawlist",
+            message: "What would you like to do?",
+            choices: [
+                "See list of products for sale.",
+                "Exit"
+            ]
+        })
+        .then(function (answer) {
+            switch (answer.action) {
+                case "See list of products for sale.":
+                    productListSearch();
+                    break;
 
-              case "Exit":
-              exit();
-              break;
-          }
-      });
+                case "Exit":
+                    exit();
+                    break;
+            }
+        });
 }
 function productListSearch() {
-    connection.query("SELECT * FROM products", function(err, results) {
+    connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
-    inquirer
-        .prompt([
-            {
-            name: "choice",
-            type: "rawlist",
-            message: "What is the ID of the product you would like to puchase?",
-            choices: function() {
-                var choiceArray = [];
-                for (var i = 0; i < results.length; i++) {
-                    choiceArray.push(results[i].product_name);
-                }
-                return choiceArray;
-            },
-            },
-            {
-            name: "purchase",
-            type: "input",
-            message: "How many would you like to purchase?"
-            }
-        ])
-        .then(function(answer) {
-            var chosenItem
-            for (var i = 0 ; i < results.length; i++) {
-                if (results[i].product_name === answer.choice) {
-                    chosenItem = results[i];
-                }
-            }
-            if (chosenItem.stock_quantity > parseInt(answer.purchase)) {
-                connection.query(
-                    "UPDATE products SET ? WHERE ?",
-                    [
-                        {
-                            stock_quantity: (stock_quantity - answer.purchase)
-                        },
-                        {
-                            item_id: chosenItem.item_id
+        inquirer
+            .prompt([
+                {
+                    name: "choice",
+                    type: "rawlist",
+                    message: "What is the ID of the product you would like to puchase?",
+                    choices: function () {
+                        var choiceArray = [];
+                        for (var i = 0; i < res.length; i++) {
+                            choiceArray.push(res[i].product_name);
                         }
-                    ],
-                    function(error) {
-                        if (error) throw err;
-                        console.log("Congratulations! Purchase successful!");
-                        runSearch();
+                        return choiceArray;
+                    },
+                },
+                {
+                    name: "quantity",
+                    type: "input",
+                    message: "How many would you like to purchase?"
+                }
+            ])
+            .then(function (answer) {
+                for (var i = 0; i < res.length; i++) {
+                    if (res[i].product_name === answer.choice) {
+                        var chosenItem = res[i];
                     }
-                )
-            }
-            else if (chosenItem.stock_quantity < parseInt(answer.purchase)) {
-                console.log("Insufficient quantity in stock.  Please update amount, or choose a different item.  Thank you!");
-                runSearch();
-            }
-        })
+                }
+                connection.query("SELECT * FROM products WHERE item_id = chosenItem", function (err, results) {
+                    if (err) throw err;
+                    else if (chosenItem.stock_quantity > parseInt(quantity)) {
+                    connection.query(
+                        "UPDATE products SET ? WHERE ?",
+                        [
+                            {
+                                stock_quantity: (stock_quantity - quantity)
+                            },
+                            {
+                                item_id: chosenItem.item_id
+                            }
+                        ],
+                        function () {
+                            console.log("Congratulations! Purchase successful!");
+                            runSearch();
+                        }
+                );
+                }
+                else if (chosenItem.stock_quantity < parseInt(quantity)) {
+                    console.log("Insufficient quantity in stock.  Please update amount, or choose a different item.  Thank you!");
+                    runSearch();
+                }
+            })
     })
 }
-
+    )}
 
 
 function exit() {
