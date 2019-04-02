@@ -1,8 +1,6 @@
 # Bamazon
 UCF Coding Bootcamp Bamazon Homework Assignment
 
-# Node.js & MySQL
-
 ## Overview
 
 Bamazon is an Amazon-like storefront which allows the user to view the current items in the inventory.  The application allows the user to take in orders from customers and depletes stock from the store's inventory based on the customers purchase.
