@@ -66,19 +66,22 @@ function productListSearch() {
                 }
             ])
             .then(function (answer) {
+               
                 for (var i = 0; i < res.length; i++) {
                     if (res[i].product_name === answer.choice) {
                         var chosenItem = res[i];
                     }
                 }
-                connection.query("SELECT * FROM products WHERE item_id = chosenItem.item_id", function (err, res) {
+                connection.query("SELECT * FROM products WHERE item_id = ?", [chosenItem.item_id], function (err, res) {
+                    var quanity = answer.quantity;
+                    console.log(answer.quantity);
                     if (err) throw err;
-                    else if (chosenItem.stock_quantity > parseInt(quantity)) {
+                    else if (chosenItem.stock_quantity > parseInt(answer.quantity)) {
                     connection.query(
                         "UPDATE products SET ? WHERE ?",
                         [
                             {
-                                stock_quantity: (stock_quantity - quantity)
+                                stock_quantity: (chosenItem.stock_quantity - answer.quantity)
                             },
                             {
                                 item_id: chosenItem.item_id
